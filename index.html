@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Song Generator Quiz</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #ffffff;
+        color: #111111;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 800px;
+        width: 100%;
+        text-align: center;
+        transition: opacity 0.5s ease;
+      }
+      h1 {
+        font-family: "Pacifico", cursive, "Inter", sans-serif;
+        font-size: 3rem;
+        margin-bottom: 3.5rem; /* Increased bottom margin */
+        color: #6112bd; /* Whimsical pink */
+        letter-spacing: 2px;
+      }
+      .question {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+      }
+      .options button {
+        display: block;
+        width: 100%;
+        margin: 18px 0;
+        padding: 22px;
+        font-size: 1.5rem;
+        background-color: #f0f0f0;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .options button:hover {
+        background-color: #e0e0e0;
+      }
+      .result {
+        font-size: 1.5rem;
+        white-space: pre-wrap;
+        margin-top: 2rem;
+      }
+      #resultBox button {
+        font-size: 1.2rem;
+        padding: 14px 28px;
+      }
+      #questionBox {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="quizContainer">
+      <h1>Build a Song with AI</h1>
+      <div id="questionBox"></div>
+      <div class="options" id="optionsBox"></div>
+      <div class="result" id="resultBox" style="display: none"></div>
+    </div>
+
+    <script>
+      (function () {
+        const quizQuestions = [
+          {
+            q: "What genre will your song be?",
+            key: "genre",
+            options: [
+              "Pop Song",
+              "Alternative Rock Song",
+              "Outlaw Country Song",
+              "Rap Song",
+            ],
+          },
+          {
+            q: "What is the mood or emotion of the song?",
+            key: "mood",
+            options: [
+              "Heartbroken",
+              "Joyful and Uplifting",
+              "Mysterious and Dark",
+              "Empowering",
+            ],
+          },
+          {
+            q: "Who is the song about?",
+            key: "subject",
+            options: [
+              "A lost lover",
+              "A best friend",
+              "Yourself (first-person)",
+              "A fictional character",
+            ],
+          },
+          {
+            q: "What is the central theme or message?",
+            key: "theme",
+            options: [
+              "Moving on from the past",
+              "Celebrating success",
+              "Longing for someone",
+              "Fighting through challenges",
+            ],
+          },
+          {
+            q: "What is the setting or backdrop of the story?",
+            key: "setting",
+            options: [
+              "A small town",
+              "A big city at night",
+              "A high school or college",
+              "A road trip across the country",
+            ],
+          },
+          {
+            q: "What perspective will the song be told from?",
+            key: "perspective",
+            options: [
+              'First person ("I")',
+              'Second person ("You")',
+              'Third person ("They")',
+              "Duet (Two voices)",
+            ],
+          },
+          {
+            q: "What is one specific image or detail to include in the lyrics?",
+            key: "image",
+            options: [
+              "A worn-out leather jacket",
+              "Fireworks lighting up the sky",
+              "A dusty photo album",
+              "Rain tapping on a window",
+            ],
+          },
+          {
+            q: "What type of chorus would you like?",
+            key: "chorus",
+            options: [
+              "Catchy and repetitive",
+              "Slow and emotional",
+              "Anthemic and powerful",
+              "Narrative-driven",
+            ],
+          },
+        ];
+
+        const answers = {};
+        let current = 0;
+
+        function showQuestion(index) {
+          const question = quizQuestions[index];
+          document.getElementById("questionBox").innerText = question.q;
+          const optionsBox = document.getElementById("optionsBox");
+          optionsBox.innerHTML = "";
+          question.options.forEach((option) => {
+            const btn = document.createElement("button");
+            btn.innerText = option;
+            btn.onclick = () => {
+              answers[question.key] = option;
+              current++;
+              if (current < quizQuestions.length) {
+                showQuestion(current);
+              } else {
+                showResult();
+              }
+            };
+            optionsBox.appendChild(btn);
+          });
+        }
+
+        function showResult() {
+          document.getElementById("questionBox").style.display = "none";
+          document.getElementById("optionsBox").style.display = "none";
+          const result = `Write a ${
+            answers.genre
+          } that is ${answers.mood.toLowerCase()}, told from ${answers.perspective.toLowerCase()}.
+
+It's about ${answers.subject.toLowerCase()}, with a theme of ${answers.theme.toLowerCase()}.
+
+Set in ${answers.setting.toLowerCase()}, include imagery like ${answers.image.toLowerCase()} and a chorus that is ${answers.chorus.toLowerCase()}.`;
+          const resultBox = document.getElementById("resultBox");
+          resultBox.style.display = "block";
+          resultBox.innerText = result;
+
+          // Add copy button
+          const copyBtn = document.createElement("button");
+          copyBtn.innerText = "Copy to Clipboard";
+          copyBtn.style.marginTop = "20px";
+          copyBtn.onclick = () => {
+            navigator.clipboard.writeText(result);
+            copyBtn.innerText = "Copied!";
+            setTimeout(() => (copyBtn.innerText = "Copy to Clipboard"), 1500);
+          };
+          resultBox.appendChild(document.createElement("br"));
+          resultBox.appendChild(copyBtn);
+        }
+
+        showQuestion(current);
+      })();
+    </script>
+  </body>
+</html>
