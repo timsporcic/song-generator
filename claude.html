@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Song Creation Quiz</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #333;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .quiz-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .quiz-card:hover {
+        /* transform: translateY(-5px); */
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+      }
+
+      h1 {
+        color: #4a5568;
+        text-align: center;
+        font-size: 2.5em;
+        margin-bottom: 30px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .question-container {
+        display: none;
+        animation: fadeIn 0.5s ease-in-out;
+      }
+
+      .question-container.active {
+        display: block;
+      }
+
+      .question-number {
+        color: #667eea;
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .question-title {
+        font-size: 1.8em;
+        margin-bottom: 30px;
+        color: #2d3748;
+        font-weight: 600;
+      }
+
+      .options {
+        display: grid;
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+
+      .option {
+        background: linear-gradient(45deg, #f7fafc, #edf2f7);
+        border: 2px solid #e2e8f0;
+        border-radius: 15px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1.1em;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .option::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.4),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .option:hover {
+        transform: translateX(10px);
+        border-color: #667eea;
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+      }
+
+      .option:hover::before {
+        left: 100%;
+      }
+
+      .option.selected {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border-color: #667eea;
+        transform: scale(1.02);
+      }
+
+      .navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
+      }
+
+      .btn {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 25px;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e2e8f0;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        transition: width 0.5s ease;
+        border-radius: 10px;
+      }
+
+      .result-container {
+        display: none;
+        text-align: center;
+      }
+
+      .result-container.active {
+        display: block;
+        animation: fadeIn 0.5s ease-in-out;
+      }
+
+      .prompt-box {
+        background: linear-gradient(135deg, #f7fafc, #edf2f7);
+        border: 2px solid #667eea;
+        border-radius: 15px;
+        padding: 30px;
+        margin: 30px 0;
+        font-size: 1.2em;
+        line-height: 1.6;
+        color: #2d3748;
+        position: relative;
+      }
+
+      .copy-btn {
+        background: linear-gradient(45deg, #48bb78, #38a169);
+        margin-top: 20px;
+      }
+
+      .copy-btn:hover {
+        box-shadow: 0 15px 35px rgba(72, 187, 120, 0.4);
+      }
+
+      .copy-success {
+        color: #48bb78;
+        font-weight: bold;
+        margin-top: 10px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .copy-success.show {
+        opacity: 1;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .restart-btn {
+        background: linear-gradient(45deg, #ed8936, #dd6b20);
+        margin-left: 15px;
+      }
+
+      .restart-btn:hover {
+        box-shadow: 0 15px 35px rgba(237, 137, 54, 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="quiz-card">
+        <h1>🎵 AI Song Creation Quiz</h1>
+
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressBar"></div>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="question-container active" data-question="1">
+          <div class="question-number">Question 1 of 8</div>
+          <div class="question-title">What genre will your song be?</div>
+          <div class="options">
+            <div class="option" data-value="Pop Song">A) Pop Song</div>
+            <div class="option" data-value="Alternative Rock Song">
+              B) Alternative Rock Song
+            </div>
+            <div class="option" data-value="Outlaw Country Song">
+              C) Outlaw Country Song
+            </div>
+            <div class="option" data-value="Rap Song">D) Rap Song</div>
+          </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question-container" data-question="2">
+          <div class="question-number">Question 2 of 8</div>
+          <div class="question-title">
+            What is the mood or emotion of the song?
+          </div>
+          <div class="options">
+            <div class="option" data-value="Heartbroken">A) Heartbroken</div>
+            <div class="option" data-value="Joyful and Uplifting">
+              B) Joyful and Uplifting
+            </div>
+            <div class="option" data-value="Mysterious and Dark">
+              C) Mysterious and Dark
+            </div>
+            <div class="option" data-value="Empowering">D) Empowering</div>
+          </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question-container" data-question="3">
+          <div class="question-number">Question 3 of 8</div>
+          <div class="question-title">Who is the song about?</div>
+          <div class="options">
+            <div class="option" data-value="A lost lover">A) A lost lover</div>
+            <div class="option" data-value="A best friend">
+              B) A best friend
+            </div>
+            <div class="option" data-value="Yourself (first-person)">
+              C) Yourself (first-person)
+            </div>
+            <div class="option" data-value="A fictional character">
+              D) A fictional character
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="question-container" data-question="4">
+          <div class="question-number">Question 4 of 8</div>
+          <div class="question-title">
+            What is the central theme or message?
+          </div>
+          <div class="options">
+            <div class="option" data-value="Moving on from the past">
+              A) Moving on from the past
+            </div>
+            <div class="option" data-value="Celebrating success">
+              B) Celebrating success
+            </div>
+            <div class="option" data-value="Longing for someone">
+              C) Longing for someone
+            </div>
+            <div class="option" data-value="Fighting through challenges">
+              D) Fighting through challenges
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="question-container" data-question="5">
+          <div class="question-number">Question 5 of 8</div>
+          <div class="question-title">
+            What is the setting or backdrop of the story?
+          </div>
+          <div class="options">
+            <div class="option" data-value="A small town">A) A small town</div>
+            <div class="option" data-value="A big city at night">
+              B) A big city at night
+            </div>
+            <div class="option" data-value="A high school or college">
+              C) A high school or college
+            </div>
+            <div class="option" data-value="A road trip across the country">
+              D) A road trip across the country
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-container" data-question="6">
+          <div class="question-number">Question 6 of 8</div>
+          <div class="question-title">
+            What perspective will the song be told from?
+          </div>
+          <div class="options">
+            <div class="option" data-value='First person ("I")'>
+              A) First person ("I")
+            </div>
+            <div class="option" data-value='Second person ("You")'>
+              B) Second person ("You")
+            </div>
+            <div class="option" data-value='Third person ("They")'>
+              C) Third person ("They")
+            </div>
+            <div class="option" data-value="Duet (Two voices)">
+              D) Duet (Two voices)
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="question-container" data-question="7">
+          <div class="question-number">Question 7 of 8</div>
+          <div class="question-title">
+            What is one specific image or detail to include in the lyrics?
+          </div>
+          <div class="options">
+            <div class="option" data-value="A worn-out leather jacket">
+              A) A worn-out leather jacket
+            </div>
+            <div class="option" data-value="Fireworks lighting up the sky">
+              B) Fireworks lighting up the sky
+            </div>
+            <div class="option" data-value="A dusty photo album">
+              C) A dusty photo album
+            </div>
+            <div class="option" data-value="Rain tapping on a window">
+              D) Rain tapping on a window
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-container" data-question="8">
+          <div class="question-number">Question 8 of 8</div>
+          <div class="question-title">What type of chorus would you like?</div>
+          <div class="options">
+            <div class="option" data-value="Catchy and repetitive">
+              A) Catchy and repetitive
+            </div>
+            <div class="option" data-value="Slow and emotional">
+              B) Slow and emotional
+            </div>
+            <div class="option" data-value="Anthemic and powerful">
+              C) Anthemic and powerful
+            </div>
+            <div class="option" data-value="Narrative-driven">
+              D) Narrative-driven
+            </div>
+          </div>
+        </div>
+
+        <!-- Result -->
+        <div class="result-container" id="result">
+          <div class="question-title">🎉 Your AI Song Prompt is Ready!</div>
+          <div class="prompt-box" id="promptBox">
+            <!-- Generated prompt will appear here -->
+          </div>
+          <button class="btn copy-btn" onclick="copyPrompt()">
+            📋 Copy Prompt to Clipboard
+          </button>
+          <button class="btn restart-btn" onclick="restartQuiz()">
+            🔄 Start Over
+          </button>
+          <div class="copy-success" id="copySuccess">
+            ✅ Copied to clipboard!
+          </div>
+        </div>
+
+        <div class="navigation">
+          <button
+            class="btn"
+            id="prevBtn"
+            onclick="previousQuestion()"
+            disabled
+          >
+            ← Previous
+          </button>
+          <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>
+            Next →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentQuestion = 1;
+      const totalQuestions = 8;
+      let answers = {};
+
+      function updateProgress() {
+        const progress = ((currentQuestion - 1) / totalQuestions) * 100;
+        document.getElementById("progressBar").style.width = progress + "%";
+      }
+
+      function showQuestion(questionNum) {
+        document
+          .querySelectorAll(".question-container")
+          .forEach((q) => q.classList.remove("active"));
+        document.getElementById("result").classList.remove("active");
+
+        if (questionNum <= totalQuestions) {
+          document
+            .querySelector(`[data-question="${questionNum}"]`)
+            .classList.add("active");
+          document.getElementById("prevBtn").disabled = questionNum === 1;
+          document.getElementById("nextBtn").disabled = !answers[questionNum];
+
+          if (questionNum === totalQuestions && answers[questionNum]) {
+            document.getElementById("nextBtn").textContent = "Show Results →";
+          } else {
+            document.getElementById("nextBtn").textContent = "Next →";
+          }
+        } else {
+          showResults();
+        }
+
+        updateProgress();
+      }
+
+      function selectOption(questionNum, option) {
+        const questionContainer = document.querySelector(
+          `[data-question="${questionNum}"]`
+        );
+        questionContainer
+          .querySelectorAll(".option")
+          .forEach((opt) => opt.classList.remove("selected"));
+        option.classList.add("selected");
+
+        answers[questionNum] = option.dataset.value;
+        document.getElementById("nextBtn").disabled = false;
+
+        if (questionNum === totalQuestions) {
+          document.getElementById("nextBtn").textContent = "Show Results →";
+        }
+      }
+
+      function nextQuestion() {
+        if (currentQuestion <= totalQuestions) {
+          currentQuestion++;
+          showQuestion(currentQuestion);
+        }
+      }
+
+      function previousQuestion() {
+        if (currentQuestion > 1) {
+          currentQuestion--;
+          showQuestion(currentQuestion);
+        }
+      }
+
+      function showResults() {
+        document
+          .querySelectorAll(".question-container")
+          .forEach((q) => q.classList.remove("active"));
+        document.getElementById("result").classList.add("active");
+        document.querySelector(".navigation").style.display = "none";
+
+        const prompt = `Write a ${
+          answers[1]
+        } that is ${answers[2].toLowerCase()}, told from ${answers[6].toLowerCase()}.
+
+It's about ${answers[3].toLowerCase()}, with a theme of ${answers[4].toLowerCase()}.
+
+Set in ${answers[5].toLowerCase()}, include imagery like ${answers[7].toLowerCase()} and a chorus that is ${answers[8].toLowerCase()}.`;
+
+        document.getElementById("promptBox").textContent = prompt;
+        updateProgress();
+        document.getElementById("progressBar").style.width = "100%";
+      }
+
+      function copyPrompt() {
+        const promptText = document.getElementById("promptBox").textContent;
+        navigator.clipboard.writeText(promptText).then(() => {
+          const successMsg = document.getElementById("copySuccess");
+          successMsg.classList.add("show");
+          setTimeout(() => successMsg.classList.remove("show"), 3000);
+        });
+      }
+
+      function restartQuiz() {
+        currentQuestion = 1;
+        answers = {};
+        document
+          .querySelectorAll(".option")
+          .forEach((opt) => opt.classList.remove("selected"));
+        document.querySelector(".navigation").style.display = "flex";
+        showQuestion(1);
+      }
+
+      // Event listeners for options
+      document.querySelectorAll(".option").forEach((option) => {
+        option.addEventListener("click", function () {
+          const questionNum = parseInt(
+            this.closest(".question-container").dataset.question
+          );
+          selectOption(questionNum, this);
+        });
+      });
+
+      // Initialize
+      showQuestion(1);
+    </script>
+  </body>
+</html>
