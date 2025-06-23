@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Midjourney Evolution</title>
+    <style>
+      :root {
+        --bg-color: #1a1a1a;
+        --text-color: #ffffff;
+        --button-bg: #3b82f6;
+        --button-hover: #2563eb;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .slideshow-container {
+        max-width: 800px;
+        width: 100%;
+        text-align: center;
+      }
+
+      .slide {
+        display: none;
+        animation: fadeIn 0.5s;
+      }
+
+      .slide.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .slide img {
+        max-width: 100%;
+        height: auto;
+        max-height: 60vh;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      .slide video {
+        max-width: 100%;
+        height: auto;
+        max-height: 60vh;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      .title {
+        margin-top: 20px;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-color);
+      }
+
+      .controls {
+        margin-top: 30px;
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        align-items: center;
+      }
+
+      button {
+        background-color: var(--button-bg);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 1rem;
+        font-weight: 500;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: var(--button-hover);
+      }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .slide-counter {
+        font-size: 1rem;
+        color: #9ca3af;
+      }
+
+      .main-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .caption {
+        font-size: 1.2rem;
+        color: #9ca3af;
+        margin-bottom: 40px;
+        font-weight: 400;
+      }
+
+      .restart-button {
+        background-color: #10b981;
+        margin-top: 20px;
+      }
+
+      .restart-button:hover {
+        background-color: #059669;
+      }
+
+      @media (max-width: 640px) {
+        .main-title {
+          font-size: 1.8rem;
+        }
+
+        .caption {
+          font-size: 1rem;
+        }
+
+        .title {
+          font-size: 1.2rem;
+        }
+
+        button {
+          padding: 10px 20px;
+          font-size: 0.9rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slideshow-container">
+      <h1 class="main-title">Midjourney Evolution</h1>
+      <p class="caption">Prompt: a girl and a dog running on the beach</p>
+      <div class="slide active">
+        <img src="beach/girl-and-dog-v1.png" alt="girl-and-dog-v1" />
+        <h2 class="title">v1 - Feb 2022</h2>
+      </div>
+
+      <div class="slide">
+        <img src="beach/girl-and-dog-v2.png" alt="girl-and-dog-v2" />
+        <h2 class="title">v2 - Apr 2022</h2>
+      </div>
+
+      <div class="slide">
+        <img src="beach/girl-and-dog-v3.png" alt="girl-and-dog-v3" />
+        <h2 class="title">v3 - Jul 2022</h2>
+      </div>
+
+      <div class="slide">
+        <img src="beach/girl-and-dog-v4.png" alt="girl-and-dog-v4" />
+        <h2 class="title">v4 - Nov 2022</h2>
+      </div>
+
+      <div class="slide">
+        <img src="beach/girl-and-dog-v5.png" alt="girl-and-dog-v5" />
+        <h2 class="title">v5 - Mar 2023</h2>
+      </div>
+
+      <div class="slide">
+        <img src="beach/girl-and-dog-v6.png" alt="girl-and-dog-v6" />
+        <h2 class="title">v6 - Dec 2023</h2>
+      </div>
+
+      <div class="slide">
+        <img src="beach/girl-and-dog-v7.png" alt="girl-and-dog-v7" />
+        <h2 class="title">v7 - Apr 2025</h2>
+      </div>
+
+      <div class="slide">
+        <video controls>
+          <source src="beach/girl-and-dog-v7mp4.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <h2 class="title">v7 Video - Jun 2025</h2>
+        <button class="restart-button" onclick="goToFirstSlide()">
+          Back to First Slide
+        </button>
+      </div>
+
+      <div class="controls">
+        <button id="prevBtn" onclick="changeSlide(-1)">Previous</button>
+        <span class="slide-counter">
+          <span id="currentSlide">1</span> / <span id="totalSlides">8</span>
+        </span>
+        <button id="nextBtn" onclick="changeSlide(1)">Next</button>
+      </div>
+    </div>
+
+    <script>
+      let currentSlide = 1;
+      const totalSlides = 8;
+
+      function showSlide(n) {
+        const slides = document.getElementsByClassName("slide");
+
+        // Wrap around if necessary
+        if (n > totalSlides) currentSlide = 1;
+        if (n < 1) currentSlide = totalSlides;
+
+        // Hide all slides
+        for (let i = 0; i < slides.length; i++) {
+          slides[i].classList.remove("active");
+        }
+
+        // Show current slide
+        slides[currentSlide - 1].classList.add("active");
+
+        // Update slide counter
+        document.getElementById("currentSlide").textContent = currentSlide;
+
+        // Update button states
+        document.getElementById("prevBtn").disabled = currentSlide === 1;
+        document.getElementById("nextBtn").disabled =
+          currentSlide === totalSlides;
+      }
+
+      function changeSlide(n) {
+        currentSlide += n;
+        showSlide(currentSlide);
+      }
+
+      function goToFirstSlide() {
+        currentSlide = 1;
+        showSlide(currentSlide);
+      }
+
+      // Keyboard navigation
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "ArrowLeft") {
+          changeSlide(-1);
+        } else if (event.key === "ArrowRight") {
+          changeSlide(1);
+        }
+      });
+
+      // Initialize
+      showSlide(currentSlide);
+    </script>
+  </body>
+</html>
