@@ -68,6 +68,27 @@ It's about a best friend, with a theme of celebrating success.
 Set in a big city at night, include imagery like fireworks lighting up the sky and a chorus that is catchy and repetitive.
 ```
 
+## Additional Pages
+
+### AI Music Fraud Page (`fraud.html`)
+An informational page about AI music fraud with a dramatic design featuring:
+- Bold typography with Playfair Display font
+- Dark gradient background with animated elements
+- Educational content about AI-generated music fraud
+
+### Midjourney Evolution Pages
+Two demonstration pages showing the evolution of AI image generation through Midjourney:
+
+#### Beach Evolution (`beach.html`)
+- Interactive slideshow showcasing beach-themed images
+- Demonstrates progression of Midjourney versions from v1 to v6
+- Clean, modern interface with navigation controls
+
+#### Will Smith Evolution (`willsmith.html`)
+- Similar slideshow format featuring Will Smith-themed generations
+- Shows improvement in AI portrait generation over time
+- Same clean interface as the beach page
+
 ## Technical Details
 
 - **Framework**: Vanilla JavaScript (no dependencies)
